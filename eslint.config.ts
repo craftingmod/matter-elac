@@ -5,9 +5,23 @@ import eslintConfigPrettier from "eslint-config-prettier/flat"
 
 export default defineConfig([
   {
-    files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
+    files: [
+      "src/**/*.{js,mjs,cjs,ts,mts,cts}",
+      "eslint.config.ts",
+      "prettier-config.ts",
+    ],
     languageOptions: { globals: globals.node },
   },
   tseslint.configs.recommended,
   eslintConfigPrettier,
+  {
+    rules: {
+      "prefer-const": [
+        "error",
+        {
+          ignoreReadBeforeAssign: true,
+        },
+      ],
+    },
+  },
 ])
