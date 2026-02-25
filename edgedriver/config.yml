@@ -1,0 +1,7 @@
+name: "ELAC Matter"
+packageKey: "alyac.matterbridge.elacamp"
+description: "Virtual Matter driver for matter-elac."
+developer: "craftingmod"
+vendorSupportInformation: "https://github.com/craftingmod/matter-elac"
+permissions:
+  matter: {}

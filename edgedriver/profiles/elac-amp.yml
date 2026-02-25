@@ -1,0 +1,20 @@
+name: elac-amp
+components:
+  - id: main
+    label: "Amplifier"
+    capabilities:
+      - id: switch
+        version: 1
+      - id: audioVolume
+        version: 1
+      - id: audioMute
+        version: 1
+      - id: mediaInputSource
+        version: 1
+      - id: keypadInput
+        version: 1
+    categories:
+      - name: Receiver
+metadata:
+  deviceType: Receiver
+  deviceCategory: Receiver

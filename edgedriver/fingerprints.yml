@@ -1,0 +1,6 @@
+matterManufacturer:
+  - id: "alyac/matterbridge/elacamp"
+    deviceLabel: Elac Amplifier Bridge
+    vendorId: 0xFFF1
+    productId: 0xAC11
+    deviceProfileName: elac-amp
