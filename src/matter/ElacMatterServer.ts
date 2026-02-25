@@ -3,6 +3,7 @@ import {
   KeypadInputServer,
   LevelControlServer,
   MediaInputServer,
+  ModeSelectServer,
   OnOffServer,
 } from "@matter/main/behaviors"
 import { InputType } from "./MatterTypes.ts"
@@ -12,7 +13,7 @@ import {
   getInputIndex,
   type A101gElacInput,
 } from "../elac/ElacFetch.ts"
-import { KeypadInput, type MediaInput } from "@matter/main/clusters"
+import { KeypadInput, ModeSelect, type MediaInput } from "@matter/main/clusters"
 import type { MaybePromise, Endpoint } from "@matter/main"
 import { ChocoLogger } from "choco-logger"
 
@@ -113,6 +114,38 @@ export function createMediaInputServer(elacClient: A101gClient) {
   }
 }
 
+export function createInputSelectServer(elacClient: A101gClient) {
+  const InputSelectServer = class extends ModeSelectServer {
+
+    override initialize() {
+      // Input Sources
+      this.state.supportedModes = [
+        { label: "Analog 1", mode: 1, semanticTags: [] },
+        { label: "Analog 2", mode: 2, semanticTags: [] },
+        { label: "Optical", mode: 3, semanticTags: [] },
+        { label: "Coaxial", mode: 4, semanticTags: [] },
+        { label: "Streaming", mode: 5, semanticTags: [] },
+      ]
+      this.state.description = "Select Input Source"
+
+      this.state.currentMode = getInputIndex(elacClient.input)
+    }
+
+    override async changeToMode(request: ModeSelect.ChangeToModeRequest) {
+      const deviceType: A101gElacInput[] = [ElacInput.Stream, ...A101gElacInputOrder]
+      const inputType = deviceType[Number(request.newMode)] ?? ElacInput.Stream
+
+      await elacClient.setInput(inputType)
+    }
+  }
+
+  return {
+    InputSelectServer,
+  }
+}
+
+
+
 export function createPowerServer(elacClient: A101gClient) {
   const PowerServer = class extends OnOffServer {
     override initialize() {
@@ -174,10 +207,10 @@ export function createKeypadServer(elacClient: A101gClient) {
           break
         case KeyCode.VolumeUp:
           await elacClient.setMute(false)
-          await elacClient.setVolume(elacClient.volume + 8) // +3 in 0~100
+          await elacClient.setVolume(elacClient.volume + 3) // +3 in 0~100
           break
         case KeyCode.VolumeDown:
-          await elacClient.setVolume(elacClient.volume - 8) // -3 in 0~100
+          await elacClient.setVolume(elacClient.volume - 3) // -3 in 0~100
           break
         case KeyCode.Mute:
           await elacClient.setMute(!elacClient.mute)
@@ -196,7 +229,7 @@ export function createKeypadServer(elacClient: A101gClient) {
           await elacClient.setMute(false)
           break
         default:
-          Log.debug(`[Keypad] Unsupported key: ${keyCode}`)
+          Log.warning(`[Keypad] Unsupported key: ${keyCode}`)
       }
 
       return {
@@ -218,17 +251,19 @@ export function syncElacState(
     mute: Endpoint<any> | Endpoint<any>[]
     volume: Endpoint<any> | Endpoint<any>[]
     media: Endpoint<any> | Endpoint<any>[]
+    modeSelect: Endpoint<any> | Endpoint<any>[]
   }>,
 ) {
   const maxValue = 254
   const wrapArray = <T>(value: T | T[] | undefined) =>
     value === undefined ? [] : Array.isArray(value) ? value : [value]
 
-  const { power, mute, volume, media } = {
+  const { power, mute, volume, media, modeSelect } = {
     power: wrapArray(endpoints.power),
     mute: wrapArray(endpoints.mute),
     volume: wrapArray(endpoints.volume),
     media: wrapArray(endpoints.media),
+    modeSelect: wrapArray(endpoints.modeSelect),
   }
 
   const onStateUpdate = async (key: string, value: string) => {
@@ -256,6 +291,9 @@ export function syncElacState(
           const inputIndex = getInputIndex(value)
           for (const e of media) {
             await e.set({ mediaInput: { currentInput: inputIndex } })
+          }
+          for (const e of modeSelect) {
+            await e.set({ modeSelect: { currentMode: inputIndex } })
           }
           break
       }

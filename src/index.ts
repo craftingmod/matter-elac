@@ -1,6 +1,7 @@
 import "./LogConfig.ts"
 import {
   BasicVideoPlayerDevice,
+  ModeSelectDevice,
   OnOffPlugInUnitDevice,
   SpeakerDevice,
 } from "@matter/main/devices"
@@ -13,6 +14,7 @@ import {
   createMediaInputServer,
   createPowerServer,
   createVolumeServer,
+  createInputSelectServer,
   syncElacState,
 } from "./matter/ElacMatterServer.ts"
 import { DummyMediaPlaybackServer } from "./matter/DummyServer.ts"
@@ -41,6 +43,7 @@ const { MuteServer, VolumeServer } = createVolumeServer(elacClient)
 const { InputSourceServer } = createMediaInputServer(elacClient)
 const { PowerServer } = createPowerServer(elacClient)
 const { KeypadServer } = createKeypadServer(elacClient)
+const { InputSelectServer } = createInputSelectServer(elacClient)
 
 const PowerDevice = OnOffPlugInUnitDevice.with(PowerServer)
 
@@ -54,6 +57,8 @@ const KeypadInputDevice = BasicVideoPlayerDevice.with(
   KeypadServer,
   InputSourceServer,
 )
+
+const InputSelectDevice = ModeSelectDevice.with(InputSelectServer)
 
 const rootNode = await ServerNode.create({
   id: `elac-matter-${serialHash}`,
@@ -85,11 +90,16 @@ const keypadEndpoint = await rootNode.add(KeypadInputDevice, {
   id: "keypad-inputsource-switch",
 })
 
+const inputSelectEndpoint = await rootNode.add(InputSelectDevice, {
+  id: "select-inputsource",
+})
+
 syncElacState(elacClient, {
   power: [powerEndpoint, keypadEndpoint],
   mute: [muteEndpoint, volumeEndpoint],
   volume: volumeEndpoint,
   media: keypadEndpoint,
+  modeSelect: inputSelectEndpoint,
 })
 
 await rootNode.start()
