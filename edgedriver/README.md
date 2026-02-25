@@ -1,4 +1,5 @@
 ## Publish
+
 ```bash
 smartthings edge:drivers:package edgedriver --channel 11b5631f-73cd-46b4-b813-192dadb835e3
 ```

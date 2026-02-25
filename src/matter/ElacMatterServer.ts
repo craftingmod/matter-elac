@@ -116,7 +116,6 @@ export function createMediaInputServer(elacClient: A101gClient) {
 
 export function createInputSelectServer(elacClient: A101gClient) {
   const InputSelectServer = class extends ModeSelectServer {
-
     override initialize() {
       // Input Sources
       this.state.supportedModes = [
@@ -132,7 +131,10 @@ export function createInputSelectServer(elacClient: A101gClient) {
     }
 
     override async changeToMode(request: ModeSelect.ChangeToModeRequest) {
-      const deviceType: A101gElacInput[] = [ElacInput.Stream, ...A101gElacInputOrder]
+      const deviceType: A101gElacInput[] = [
+        ElacInput.Stream,
+        ...A101gElacInputOrder,
+      ]
       const inputType = deviceType[Number(request.newMode)] ?? ElacInput.Stream
 
       await elacClient.setInput(inputType)
@@ -143,8 +145,6 @@ export function createInputSelectServer(elacClient: A101gClient) {
     InputSelectServer,
   }
 }
-
-
 
 export function createPowerServer(elacClient: A101gClient) {
   const PowerServer = class extends OnOffServer {
