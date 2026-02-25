@@ -36,4 +36,3 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 # Libs
 libs/**
 !libs/*.ts
-!libs/st-lua
