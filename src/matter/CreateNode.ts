@@ -6,12 +6,7 @@ import {
   SpeakerDevice,
 } from "@matter/main/devices"
 import { ServerNode, VendorId } from "@matter/main"
-import {
-  clampSWVersion,
-  fetchCGIInfo,
-  hash6,
-  type CGIInfo,
-} from "../elac/ElacFetch.ts"
+import { clampSWVersion, hash6, type CGIInfo } from "../elac/ElacFetch.ts"
 import {
   createKeypadServer,
   createMediaInputServer,
@@ -22,10 +17,12 @@ import {
 } from "./ElacMatterServer.ts"
 import { DummyMediaPlaybackServer } from "./DummyServer.ts"
 
-export async function createRootNode(
-  elacClient: A101gClient,
-  cgiInfo: CGIInfo,
-) {
+export async function createRootNode(options: {
+  elacClient: A101gClient
+  cgiInfo: CGIInfo
+  port?: number
+}) {
+  const { elacClient, cgiInfo, port } = options
   // Create Servers
   const {
     MuteServer,
@@ -51,6 +48,9 @@ export async function createRootNode(
   const serialHash = hash6(cgiInfo.serial_number)
   const rootNode = await ServerNode.create({
     id: `elac-matter-${serialHash}`,
+    network: {
+      port: port ?? 5540,
+    },
     basicInformation: {
       hardwareVersion: clampSWVersion(cgiInfo.local.os_ver_mach),
       softwareVersion: 1001,

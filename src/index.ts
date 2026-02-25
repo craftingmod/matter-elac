@@ -6,32 +6,50 @@ import { serve } from "bun"
 import { createRootNode } from "./matter/CreateNode.ts"
 import Path from "node:path"
 import encodeQR from "qr"
+import { getPort } from "./Util.ts"
 
 const Log = new ChocoLogger("Main")
 
-if (process.env.ELAC_IP === undefined) {
+const elacIP = process.env.ELAC_IP
+if (elacIP === undefined) {
   throw new Error("Environment ELAC_IP must need to run!")
 }
 
-const cgiInfo = await fetchCGIInfo(process.env.ELAC_IP)
+const matterPort = getPort(process.env.MATTER_PORT, 5542)
+const webPort = getPort(process.env.WEB_PORT, 5502)
+
+Log.info(
+  `ELAC_IP:`,
+  elacIP,
+  `/ Matter Port:`,
+  matterPort,
+  `/ Web Port:`,
+  webPort,
+)
+
+const cgiInfo = await fetchCGIInfo(elacIP)
 Log.debug("CGI Info: ", cgiInfo)
 Log.info(`ethernet port: ${cgiInfo.TCP_port_1}`)
 
 const elacClient = new A101gClient(
-  process.env.ELAC_IP,
+  elacIP,
   Number(process.env.ELAC_PORT) ?? cgiInfo.TCP_port_1,
 )
 
 await elacClient.initialize()
 
-const rootNode = await createRootNode(elacClient, cgiInfo)
+const rootNode = await createRootNode({
+  elacClient,
+  cgiInfo,
+  port: matterPort,
+})
 
 // Hosting QR Code for pairing
 
 const getResource = (path: string) =>
   Bun.file(Path.resolve(import.meta.dir, "../public", path))
 serve({
-  port: 5500,
+  port: webPort,
   routes: {
     "/": getResource("index.html"),
     "/favicon.svg": getResource("favicon.svg"),
@@ -70,5 +88,5 @@ serve({
   },
 })
 
-Log.info(`Pairing page is opened at port 5500!`)
-Log.debug(`Pairing page (Local only):`, `http://localhost:5500/`)
+Log.info(`Pairing page is opened at port ${webPort}!`)
+Log.debug(`Pairing page (Local only):`, `http://localhost:${webPort}/`)

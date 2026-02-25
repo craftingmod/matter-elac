@@ -32,10 +32,10 @@ COPY --from=prerelease /usr/src/app/package.json .
 # Runtime port
 USER bun
 # Pairing Port
-EXPOSE 5500/tcp
+EXPOSE 5502/tcp
 # Matter Socket port
-EXPOSE 5540/udp
-EXPOSE 5540/tcp
+EXPOSE 5542/udp
+EXPOSE 5542/tcp
 # mDNS port
 EXPOSE 5353/udp
 
