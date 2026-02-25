@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@matter/main": "^0.16.8",
-    "choco-logger": "github:craftingmod/choco-logger#v1.0.0",
+    "choco-logger": "github:craftingmod/choco-logger#v1.0.1",
     "qr": "^0.5.4",
     "supports-color": "^10.2.2",
     "tiny-typed-emitter": "^2.1.0"

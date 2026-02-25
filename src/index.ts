@@ -33,7 +33,7 @@ Log.info(`ethernet port: ${cgiInfo.TCP_port_1}`)
 
 const elacClient = new A101gClient(
   elacIP,
-  Number(process.env.ELAC_PORT) ?? cgiInfo.TCP_port_1,
+  getPort(process.env.ELAC_PORT, cgiInfo.TCP_port_1),
 )
 
 await elacClient.initialize()

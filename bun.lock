@@ -6,7 +6,7 @@
       "name": "matter-elac",
       "dependencies": {
         "@matter/main": "^0.16.8",
-        "choco-logger": "github:craftingmod/choco-logger#v1.0.0",
+        "choco-logger": "github:craftingmod/choco-logger#v1.0.1",
         "qr": "^0.5.4",
         "supports-color": "^10.2.2",
         "tiny-typed-emitter": "^2.1.0",
@@ -110,7 +110,7 @@
 
     "chalk": ["chalk@5.6.2", "", {}, "sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA=="],
 
-    "choco-logger": ["choco-logger@github:craftingmod/choco-logger#5efec77", { "dependencies": { "chalk": "^5.6.2", "supports-color": "^10.2.2" }, "peerDependencies": { "typescript": "^5" } }, "craftingmod-choco-logger-5efec77"],
+    "choco-logger": ["choco-logger@github:craftingmod/choco-logger#a20e205", { "dependencies": { "chalk": "^5.6.2", "supports-color": "^10.2.2" }, "peerDependencies": { "typescript": "^5" } }, "craftingmod-choco-logger-a20e205"],
 
     "cross-spawn": ["cross-spawn@7.0.6", "", { "dependencies": { "path-key": "^3.1.0", "shebang-command": "^2.0.0", "which": "^2.0.1" } }, "sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA=="],
 
