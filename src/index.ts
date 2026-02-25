@@ -28,7 +28,8 @@ const rootNode = await createRootNode(elacClient, cgiInfo)
 
 // Hosting QR Code for pairing
 
-const getResource = (path: string) => Bun.file(Path.resolve(import.meta.dir, "../public", path))
+const getResource = (path: string) =>
+  Bun.file(Path.resolve(import.meta.dir, "../public", path))
 serve({
   port: 5500,
   routes: {
@@ -65,7 +66,7 @@ serve({
       return new Response(manualPairingCode, {
         headers: plainHeader,
       })
-    }
+    },
   },
 })
 

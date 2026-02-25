@@ -5,11 +5,11 @@
   "private": true,
   "scripts": {
     "prettier": "prettier . --write",
-    "eslint": "eslint ./src"
+    "eslint": "eslint ./src",
+    "docker:build": "docker build -t matter-elac ."
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/debug": "^4.1.12",
     "eslint": "^10.0.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.3.0",
@@ -23,7 +23,6 @@
   "dependencies": {
     "@matter/main": "^0.16.8",
     "choco-logger": "github:craftingmod/choco-logger#v1.0.0",
-    "debug": "^4.4.3",
     "qr": "^0.5.4",
     "supports-color": "^10.2.2",
     "tiny-typed-emitter": "^2.1.0"

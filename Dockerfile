@@ -1,34 +1,47 @@
-# 공식 Bun 이미지 사용
-# https://hub.docker.com/r/oven/bun/tags
-FROM oven/bun:1
-
-# 작업 디렉토리 설정
+# use the official Bun image
+# see all versions at https://hub.docker.com/r/oven/bun/tags
+FROM oven/bun:1 AS base
 WORKDIR /usr/src/app
 
-# 캐시를 활용하기 위해 패키지 파일만 먼저 복사
-COPY package.json bun.lock ./
+# install dependencies into temp directory
+# this will cache them and speed up future builds
+FROM base AS install
+RUN mkdir -p /temp/dev
+COPY package.json bun.lock /temp/dev/
+RUN cd /temp/dev && bun install --frozen-lockfile
 
-# 빌드가 필요 없으므로 프로덕션 의존성만 설치
-RUN bun install --frozen-lockfile --production
+# install with --production (exclude devDependencies)
+RUN mkdir -p /temp/prod
+COPY package.json bun.lock /temp/prod/
+RUN cd /temp/prod && bun install --frozen-lockfile --production
 
-# 애플리케이션 소스 코드 복사
-# 컴파일 과정이 없으므로 작성한 ts 소스(src, libs 등)만 넘기면 됩니다.
-# (.dockerignore 에 node_modules 를 추가하시길 권장합니다)
+# copy node_modules from temp directory
+# then copy all (non-ignored) project files into the image
+FROM base AS prerelease
+COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 
-# 권한 설정 (루트 권한 대신 bun 사용자 사용)
-USER bun
+# copy production dependencies and source code into final image
+FROM base AS release
+COPY --from=install /temp/prod/node_modules node_modules
 
-# Pair 포트
+COPY --from=prerelease /usr/src/app/src ./src
+COPY --from=prerelease /usr/src/app/public ./public
+COPY --from=prerelease /usr/src/app/package.json .
+
+# Runtime port
+USER bun
+# Pairing Port
 EXPOSE 5500/tcp
-# Matter 통신 포트
+# Matter Socket port
 EXPOSE 5540/udp
 EXPOSE 5540/tcp
-# mDNS 포트
+# mDNS port
 EXPOSE 5353/udp
 
 # ENV
 ENV MATTER_STORAGE_DRIVER="sqlite"
+ENV GIGACAGE_ENABLED=0
 ENV DEBUG_COLORS=0
 
 # 컴파일 없이 바로 실행
