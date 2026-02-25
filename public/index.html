@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matter Device Pairing</title>
+    <link rel="icon" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: rgba(22, 27, 34, 0.6);
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent-color: #58a6ff;
+            --border-color: rgba(48, 54, 61, 0.5);
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --matter-color: #f7f9fb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(88, 166, 255, 0.08), transparent 35%),
+                radial-gradient(circle at 85% 30%, rgba(201, 104, 255, 0.08), transparent 35%);
+            overflow: hidden;
+        }
+
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 40px;
+            max-width: 440px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 24px 48px var(--shadow-color);
+            transform: translateY(0);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .container:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.6);
+            border-color: rgba(88, 166, 255, 0.3);
+        }
+
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .logo-wrapper {
+            width: 56px;
+            height: 56px;
+            margin-bottom: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .logo-wrapper svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--matter-color);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #8b949e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-weight: 300;
+            font-size: 14px;
+            max-width: 280px;
+            line-height: 1.4;
+        }
+
+        .qr-wrapper {
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 20px;
+            margin: 0 auto;
+            width: fit-content;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .qr-wrapper:hover {
+            transform: scale(1.05) rotate(1deg);
+        }
+
+        .qr-image {
+            width: 220px;
+            height: 220px;
+            display: block;
+        }
+
+        .pairing-code-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .pairing-code-section:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(88, 166, 255, 0.3);
+        }
+
+        .pairing-code-section h2 {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .code-display {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+            user-select: all;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .code-display:hover {
+            color: var(--accent-color);
+        }
+
+        .code-display svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            opacity: 0.4;
+            transition: opacity 0.2s ease;
+        }
+
+        .status {
+            font-size: 13px;
+            font-weight: 600;
+            padding: 10px 24px;
+            border-radius: 30px;
+            display: inline-block;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-top: 8px;
+        }
+
+        .status.commissioning {
+            background: rgba(88, 166, 255, 0.1);
+            color: #58a6ff;
+            border: 1px solid rgba(88, 166, 255, 0.2);
+            animation: pulse-glow 2s infinite ease-in-out;
+        }
+
+        .status.commissioned {
+            background: rgba(46, 160, 67, 0.1);
+            color: #3fb950;
+            border: 1px solid rgba(46, 160, 67, 0.2);
+            transform: scale(1.05);
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(88, 166, 255, 0.2); transform: scale(1); }
+            50% { box-shadow: 0 0 20px 0 rgba(88, 166, 255, 0.1); transform: scale(1.02); }
+            100% { box-shadow: 0 0 0 0 rgba(88, 166, 255, 0.2); transform: scale(1); }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #ffffff;
+            color: #000000;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 700;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(255,255,255,0.05);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            animation: spin 1s linear infinite;
+            margin: 40px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        #content-area {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-wrapper">
+                <!-- Matter Logo SVG -->
+                <svg viewBox="0 0 256 251" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M76.0197455,64.2869435 C86.7885123,73.0232585 99.5898013,78.8974948 113.235451,81.364431 L113.235451,8.55613423 L128.063765,1.42108547e-14 L142.880485,8.55613423 L142.880485,81.364431 C156.528852,78.8950158 169.333304,73.0211579 180.107785,64.2869435 L207.028305,79.8572528 C163.246001,123.173374 92.7539991,123.173374 48.9716951,79.8572528 L76.0197455,64.2869435 Z M108.737104,250.214755 C124.350488,190.622833 89.0718235,129.570369 29.6450342,113.339794 L29.6450342,144.492007 C42.598944,149.448802 54.0917434,157.595849 63.0580137,168.17789 L0,204.582039 L0,221.705901 L14.8283139,230.215661 L77.8747339,193.811512 C82.5608843,206.864804 83.8729292,220.890524 81.6890539,234.586477 L108.737104,250.214755 Z M226.412934,113.339794 C167.018422,129.606299 131.778883,190.644738 147.390426,250.214755 L174.368914,234.632852 C172.190086,220.936735 173.502013,206.912275 178.183234,193.857887 L241.18328,230.215661 L256,221.659526 L256,204.582039 L192.941986,168.17789 C201.910643,157.598451 213.402721,149.451915 226.354966,144.492007 L226.412934,113.339794 Z"></path>
+                </svg>
+            </div>
+            <h1>Matter Connect</h1>
+            <p>Scan the QR code or enter the pairing code to add your ELAC device</p>
+        </div>
+
+        <div id="loading" class="loader"></div>
+
+        <div id="content-area">
+            <div class="qr-wrapper">
+                <img id="qr-img" class="qr-image" alt="Matter QR Code">
+            </div>
+
+            <div class="pairing-code-section" id="pairing-section">
+                <h2>Setup Code</h2>
+                <div class="code-display" onclick="copyCode()" title="Click to copy">
+                    <span id="manual-code">--</span>
+                    <svg viewBox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z"/></svg>
+                </div>
+            </div>
+
+            <div>
+                <span id="status-badge" class="status commissioning">Waiting for connection...</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Copied to clipboard!</div>
+
+    <script>
+        async function fetchPairingData() {
+            try {
+                const response = await fetch('/pairingcode');
+                const text = await response.text();
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content-area').style.display = 'flex';
+
+                const statusBadge = document.getElementById('status-badge');
+                
+                if (text.trim() === 'comissioned') {
+                    document.getElementById('qr-img').src = '/qrimage?t=' + new Date().getTime();
+                    document.getElementById('pairing-section').style.display = 'none';
+                    document.querySelector('.header p').innerText = 'Device is already connected';
+                    statusBadge.innerText = 'Commissioned ✓';
+                    statusBadge.className = 'status commissioned';
+                } else {
+                    document.getElementById('qr-img').src = '/qrimage';
+                    document.getElementById('manual-code').innerText = formatCode(text);
+                    statusBadge.innerText = 'Waiting for connection...';
+                    statusBadge.className = 'status commissioning';
+
+                    setTimeout(fetchPairingData, 3000);
+                }
+            } catch (err) {
+                console.error("Failed to fetch pairing code:", err);
+                setTimeout(fetchPairingData, 5000);
+            }
+        }
+
+        function formatCode(code) {
+            if (!code) return '';
+            const clean = code.replace(/[^0-9]/g, '');
+            if (clean.length === 11) {
+                return clean.substring(0, 4) + '-' + clean.substring(4, 7) + '-' + clean.substring(7);
+            } else if (clean.length === 21) {
+                return clean.match(/.{1,5}/g)?.join('-') || clean;
+            }
+            return code;
+        }
+
+        function copyCode() {
+            const code = document.getElementById('manual-code').innerText.replace(/-/g, '');
+            navigator.clipboard.writeText(code).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            });
+        }
+
+        fetchPairingData();
+    </script>
+</body>
+</html>
