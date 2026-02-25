@@ -2,13 +2,13 @@ name: Docker Build and Publish
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
     paths:
-      - 'src/**'
-      - 'Dockerfile'
-      - 'package.json'
-      - 'bun.lock'
-      
+      - "src/**"
+      - "Dockerfile"
+      - "package.json"
+      - "bun.lock"
+
   # Github build button
   workflow_dispatch:
 
@@ -20,7 +20,7 @@ jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
     permissions:
-      contents: read 
+      contents: read
       packages: write
 
     steps:

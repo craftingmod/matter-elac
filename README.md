@@ -22,7 +22,7 @@ Go to `http://<ELAC_IP>/` and turning on `Ethernet always ON` is highly recommen
 
 The easiest way to run the bridge is using the pre-built Docker image from the GitHub Container Registry.
 
-*Note: `--network host` is required for mDNS discovery to work properly.*
+_Note: `--network host` is required for mDNS discovery to work properly._
 
 ```bash
 # Provide your ELAC amplifier's IP address
@@ -44,25 +44,29 @@ docker run -d --name elac-bridge \
 3. Open the SmartThings app, tap "Add device", and scan the QR code.
 
 ### SmartThings Edge Driver
-To use the custom features of the ELAC amplifier, you need to install the custom edge driver *before* pairing.
+
+To use the custom features of the ELAC amplifier, you need to install the custom edge driver _before_ pairing.
+
 1. Click the invitation link: [SmartThings Edge Driver Invite](https://bestow-regional.api.smartthings.com/invite/d4294nK49bMo)
 2. Enroll your hub and install the `ELAC Matter` driver.
-3. *Note: This driver only provides the UI/Capabilities; the Docker bridge above MUST be running for it to work.*
+3. _Note: This driver only provides the UI/Capabilities; the Docker bridge above MUST be running for it to work._
 
 ---
 
 ## Advanced Configurations
 
 ### Environment Variables
-| Variable | Default | Description |
-|---|---|---|
-| `ELAC_IP` | **Required** | The IP address of your DS-A101-G amplifier. |
-| `MATTER_PORT` | `5542` | The Matter communication port (TCP/UDP). |
-| `WEB_PORT` | `5502` | The port for the pairing QR code web page (TCP). |
 
-*Note: The mDNS port (`5353/UDP`) is fixed by protocol standards.*
+| Variable      | Default      | Description                                      |
+| ------------- | ------------ | ------------------------------------------------ |
+| `ELAC_IP`     | **Required** | The IP address of your DS-A101-G amplifier.      |
+| `MATTER_PORT` | `5542`       | The Matter communication port (TCP/UDP).         |
+| `WEB_PORT`    | `5502`       | The port for the pairing QR code web page (TCP). |
+
+_Note: The mDNS port (`5353/UDP`) is fixed by protocol standards._
 
 ### Build Manually
+
 If you want to modify the source code or build the image yourself:
 
 ```bash
@@ -72,6 +76,7 @@ docker build -t matter-elac .
 ```
 
 ### Manual Run (Without Docker)
+
 ```bash
 bun install
 export ELAC_IP="192.168.x.x"
