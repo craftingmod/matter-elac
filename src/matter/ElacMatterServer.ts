@@ -186,9 +186,7 @@ export function createKeypadServer(elacClient: A101gClient) {
           const currentIndexPrev = A101gElacInputOrder.indexOf(elacClient.input)
           const prevIndex = currentIndexPrev - 1 + A101gElacInputOrder.length
           const prevInput =
-            A101gElacInputOrder[
-            (prevIndex) % A101gElacInputOrder.length
-            ]!
+            A101gElacInputOrder[prevIndex % A101gElacInputOrder.length]!
           await elacClient.setInput(prevInput)
           break
         case KeyCode.Numbers1:
