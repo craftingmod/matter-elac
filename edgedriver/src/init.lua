@@ -159,7 +159,7 @@ local function configure_handler(driver, device)
   -- Supported key codes for input selection (NUMBER1‥5 → Analog1/2/Optical/Coaxial/Streaming)
   device:emit_event(
     capabilities.keypadInput.supportedKeyCodes({
-      value = { "NUMBER1", "NUMBER2", "NUMBER3", "NUMBER4", "NUMBER5", "UP", "DOWN" },
+      value = { "NUMBER1", "NUMBER2", "NUMBER3", "NUMBER4", "NUMBER5", "UP", "DOWN", "LEFT", "RIGHT", "SELECT", "HOME"},
     })
   )
 end
@@ -377,7 +377,11 @@ local function handle_send_key(driver, device, cmd)
     NUMBER4 = KeyCode.NUMBERS4,
     NUMBER5 = KeyCode.NUMBERS5,
     UP = KeyCode.VOLUME_UP,
-    DOWN = KeyCode.VOLUME_DOWN
+    DOWN = KeyCode.VOLUME_DOWN,
+    LEFT = KeyCode.LEFT,
+    RIGHT = KeyCode.RIGHT,
+    SELECT = KeyCode.MUTE,
+    HOME = KeyCode.POWER,
   }
 
   local key = KEY_MAP[cmd.args.keyCode]

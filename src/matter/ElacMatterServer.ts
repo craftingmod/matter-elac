@@ -172,6 +172,7 @@ export function createKeypadServer(elacClient: A101gClient) {
       const keyCode = request.keyCode
 
       switch (keyCode) {
+        case KeyCode.Right:
         case KeyCode.SelectAudioInputFunction:
         case KeyCode.InputSelect:
           const currentIndex = A101gElacInputOrder.indexOf(elacClient.input)
@@ -181,7 +182,15 @@ export function createKeypadServer(elacClient: A101gClient) {
             ]!
           await elacClient.setInput(nextInput)
           break
-
+        case KeyCode.Left:
+          const currentIndexPrev = A101gElacInputOrder.indexOf(elacClient.input)
+          const prevIndex = currentIndexPrev - 1 + A101gElacInputOrder.length
+          const prevInput =
+            A101gElacInputOrder[
+            (prevIndex) % A101gElacInputOrder.length
+            ]!
+          await elacClient.setInput(prevInput)
+          break
         case KeyCode.Numbers1:
           await elacClient.setInput(ElacInput.Analog1)
           break
@@ -205,10 +214,12 @@ export function createKeypadServer(elacClient: A101gClient) {
         case KeyCode.Power:
           await elacClient.setPower(!elacClient.power)
           break
+        case KeyCode.Up:
         case KeyCode.VolumeUp:
           await elacClient.setMute(false)
           await elacClient.setVolume(elacClient.volume + 3) // +3 in 0~100
           break
+        case KeyCode.Down:
         case KeyCode.VolumeDown:
           await elacClient.setVolume(elacClient.volume - 3) // -3 in 0~100
           break
