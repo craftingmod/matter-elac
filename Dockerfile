@@ -30,22 +30,24 @@ COPY --from=prerelease /usr/src/app/public ./public
 COPY --from=prerelease /usr/src/app/package.json .
 
 # Persist storage
-USER bun
 RUN mkdir -p /usr/src/app/data && chown -R bun:bun /usr/src/app/data
 
-# ENV
-ENV MATTER_STORAGE_PATH="/usr/src/app/data"
-ENV MATTER_STORAGE_DRIVER="sqlite"
-ENV DEBUG_COLORS=0
-
-# Runtime ports
+# Expose ports (meaningless when mDNS should be used)
 # Pairing Port
 EXPOSE 5502/tcp
 # Matter Socket port
 EXPOSE 5542/udp
 EXPOSE 5542/tcp
 # mDNS port
-EXPOSE 5353/udp
+# EXPOSE 5353/udp
 
-# 컴파일 없이 바로 실행
+# Switch User
+USER bun
+
+# ENV
+ENV MATTER_STORAGE_PATH="/usr/src/app/data"
+ENV MATTER_STORAGE_DRIVER="sqlite"
+ENV DEBUG_COLORS=0
+
+# Run without compile
 ENTRYPOINT [ "bun", "run", "src/index.ts" ]
